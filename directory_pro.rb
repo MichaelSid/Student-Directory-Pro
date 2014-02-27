@@ -5,7 +5,7 @@ def input_students
   print "Please enter the name of the students \n"
   print "To finish, just hit return twice at the name \n"
   #create an empty array
-  @students = []
+  #students = []           ======> we don't need it anymore because it's a global variable
   #get the first name
   name = gets.chomp
   puts "Cohort please?"
@@ -53,14 +53,11 @@ end
 
 
 def interactive_menu
-	@students = []
   loop do
     #1. print the menu and ask the user what to do
     print_menu
-    #2. read the input and save it into a variable
-    selection = gets.chomp
-    #3. do what the user has asked
-    process(selection)
+    #2. read the input and save it into a variable & #3. do what the user has asked    
+    process(gets.chomp)
   end
 end 
 
@@ -72,8 +69,8 @@ end
 
 def show_students
 	print_header
-	print_student_bycohort(@students)
-	print_footer(@students)
+	print_student_bycohort
+	print_footer
 end
 
 def process(selection)
@@ -96,11 +93,11 @@ def print_header
   puts "------------- ".center(100)
 end
 
-def print_students(student)
-  if student.length > 0
+def print_students
+  if !@students.empty?
 	  i = 0
-	  while i < student.length
-	    stud = student[i]
+	  while i < @students.length
+	    stud = @students[i]
 	    puts "#{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100) 
 	    i += 1
 	  end
@@ -109,19 +106,20 @@ def print_students(student)
 end
 
 
-def print_student_bycohort(student)
-  if student.length > 0
+def print_student_bycohort
+  if !@students.empty?
 	  #puts "------------------".center(100)
-	  sorted = student.sort {|x,y| x[:cohort] <=> y[:cohort]}
+	  sorted = @students.sort {|x,y| x[:cohort] <=> y[:cohort]}
 	  sorted.each_with_index do |stud, index|
 	    puts "#{index +1}. #{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100)
 	  end
+	else puts "You have no students!"
   end
 end
 
 
-def print_footer(names)
-  print "Overall, we have #{names.length} great students. \n"
+def print_footer
+  print "Overall, we have #{@students.length} great students. \n"
 end
 
 #nothing happens until we call the methods
