@@ -1,5 +1,25 @@
 @students = [] # an empty array accessible to all methods
 
+def print_header
+  puts "The students of my cohort at Makers Academy".center(100)
+  puts "------------- ".center(100)
+end
+
+def print_student_bycohort
+  if !@students.empty?
+	  #puts "------------------".center(100)
+	  sorted = @students.sort {|x,y| x[:cohort] <=> y[:cohort]}
+	  sorted.each_with_index do |stud, index|
+	    puts "#{index +1}. #{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100)
+	  end
+	else puts "You have no students!"
+  end
+end
+
+def print_footer
+  print "Overall, we have #{@students.length} great students. \n"
+end
+
 #let's put all students into an array
 def input_students
   print "Please enter the name of the students \n"
@@ -7,21 +27,21 @@ def input_students
   #create an empty array
   #students = []           ======> we don't need it anymore because it's a global variable
   #get the first name
-  name = gets.chomp
+  name = STDIN.gets.chomp
   puts "Cohort please?"
-  cohort = gets.sub("\n"," ")
+  cohort = STDIN.gets.sub("\n"," ")
   puts "Are you sure? y/n"
-  sure = gets.chomp
+  sure = STDIN.gets.chomp
   if sure == "n"
     puts "Cohort please?"
-	  cohort = gets.chomp
+	  cohort = STDIN.gets.chomp
   elsif cohort.empty?
     cohort = "unknown"
   end
   puts "Hobby?"
-  hobby = gets.chomp
+  hobby = STDIN.gets.chomp
   puts "Country?"
-  country = gets.chomp
+  country = STDIN.gets.chomp
   #while the name is not empty, repeat this code
   while !name.empty? do
   #add the student hash to the array
@@ -30,25 +50,37 @@ def input_students
 	    print "Now we have #{@students.length} students. \n"
 	  else print "Now we have #{@students.length} student. \n"
 	  end
-	  name = gets.chomp
+	  name = STDIN.gets.chomp
 	break if name.empty?
 	  puts "Cohort please?"
-	  cohort = gets.chomp
+	  cohort = STDIN.gets.chomp
 	  puts "Are you sure? y/n"
-	  sure = gets.chomp
+	  sure = STDIN.gets.chomp
 	  if sure == "n"
 	    puts "Cohort please?"
-	    cohort = gets.chomp
+	    cohort = STDIN.gets.chomp
 	  elsif cohort.empty?
 	    cohort = "unknown"
 	  end
 	  puts "Hobby?"
-	  hobby = gets.chomp
+	  hobby = STDIN.gets.chomp
 	  puts "Country?"
-	  country = gets.chomp
+	  country = STDIN.gets.chomp
   end	
-  #return the array of students
-  #@students
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
+  puts "9. Exit" #9 because we'll be adding more items
+end
+
+def show_students
+	print_header
+	print_student_bycohort
+	print_footer
 end
 
 def save_students
@@ -66,43 +98,23 @@ end
 def load_students(filename = "students.csv") # we have given the filename a default value
 	file = File.open(filename, "r")
 	file.readlines.each do |line|
-		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 2 variables at the same time.
+		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 4 variables at the same time.
 		@students << {:name => name, :hobby => hobby, :country => country, :cohort => cohort}
 	end
 	file.close
 end
 
-def interactive_menu
-  loop do
-    #1. print the menu and ask the user what to do
-    print_menu
-    #2. read the input and save it into a variable & #3. do what the user has asked    
-    process(gets.chomp)
-    end
-end 
-
-def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
-  puts "9. Exit" #9 because we'll be adding more items
-end
-
-def show_students
-	print_header
-	print_student_bycohort
-	print_footer
-end
-
-def print_student_bycohort
-  if !@students.empty?
-	  #puts "------------------".center(100)
-	  sorted = @students.sort {|x,y| x[:cohort] <=> y[:cohort]}
-	  sorted.each_with_index do |stud, index|
-	    puts "#{index +1}. #{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100)
-	  end
-	else puts "You have no students!"
+def try_load_students
+	filename = ARGV.first #first argument from the command line
+  return if filename.nil? #get out of the method if it isn't given
+  if File.exists?(filename) #if it exists
+  	load_students(filename)
+  	puts " "
+  	puts "Loaded #{@students.length} from #{filename}"
+  	puts " "
+  else # if it doesn't exist
+  	puts "Sorry, #{filename} doesn't exist."
+  	exit #quit the program
   end
 end
 
@@ -123,56 +135,32 @@ def process(selection)
   end
 end
 
+def interactive_menu
+  loop do
+    #1. print the menu and ask the user what to do
+    print_menu
+    #2. read the input and save it into a variable & #3. do what the user has asked    
+    process(STDIN.gets.chomp)
+    end
+end 
 
 
-def print_header
-  puts "The students of my cohort at Makers Academy".center(100)
-  puts "------------- ".center(100)
-end
-
-def print_students
-  if !@students.empty?
-	  i = 0
-	  while i < @students.length
-	    stud = @students[i]
-	    puts "#{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100) 
-	    i += 1
-	  end
-  else puts "You have no students!"
-  end
-end
-
-
-#def try_load_file(file)
-#
-#	file = File.open(file, "r")
-#	file.readlines.each do |line|
-#		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 2 variables at the same time.
-#		@students << {:name => name, :hobby => hobby, :country => country, :cohort => cohort}
-#	end
-#	file.close
-#
+#def print_students
+#  if !@students.empty?
+#	  i = 0
+#	  while i < @students.length
+#	    stud = @students[i]
+#	    puts "#{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100) 
+#	    i += 1
+#	  end
+#  else puts "You have no students!"
+#  end
 #end
 
 
-
-
-
-def print_footer
-  print "Overall, we have #{@students.length} great students. \n"
-end
-
 #nothing happens until we call the methods
+try_load_students
 interactive_menu 
-
-
-
-#if ARGV.first 
-#	load_students(ARGV.first)
-#	show_students
-# 	else
-#		interactive_menu
-#	end
 
 
 
