@@ -63,8 +63,8 @@ def save_students
   file.close
 end
 
-def load_students
-	file = File.open("students.csv", "r")
+def load_students(filename = "students.csv") # we have given the filename a default value
+	file = File.open(filename, "r")
 	file.readlines.each do |line|
 		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 2 variables at the same time.
 		@students << {:name => name, :hobby => hobby, :country => country, :cohort => cohort}
@@ -78,7 +78,7 @@ def interactive_menu
     print_menu
     #2. read the input and save it into a variable & #3. do what the user has asked    
     process(gets.chomp)
-  end
+    end
 end 
 
 def print_menu
@@ -143,6 +143,18 @@ def print_students
 end
 
 
+#def try_load_file(file)
+#
+#	file = File.open(file, "r")
+#	file.readlines.each do |line|
+#		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 2 variables at the same time.
+#		@students << {:name => name, :hobby => hobby, :country => country, :cohort => cohort}
+#	end
+#	file.close
+#
+#end
+
+
 
 
 
@@ -151,7 +163,16 @@ def print_footer
 end
 
 #nothing happens until we call the methods
-interactive_menu
+interactive_menu 
+
+
+
+#if ARGV.first 
+#	load_students(ARGV.first)
+#	show_students
+# 	else
+#		interactive_menu
+#	end
 
 
 
