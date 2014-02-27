@@ -48,8 +48,9 @@ def input_students
 	  country = gets.chomp
   end	
   #return the array of students
-  @students
+  #@students
 end
+
 
 
 def interactive_menu
@@ -73,10 +74,21 @@ def show_students
 	print_footer
 end
 
+def print_student_bycohort
+  if !@students.empty?
+	  #puts "------------------".center(100)
+	  sorted = @students.sort {|x,y| x[:cohort] <=> y[:cohort]}
+	  sorted.each_with_index do |stud, index|
+	    puts "#{index +1}. #{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100)
+	  end
+	else puts "You have no students!"
+  end
+end
+
 def process(selection)
   case selection
   when "1"
-  	@students = input_students
+  	input_students
   when "2"
   	show_students
   when "9"
@@ -106,16 +118,7 @@ def print_students
 end
 
 
-def print_student_bycohort
-  if !@students.empty?
-	  #puts "------------------".center(100)
-	  sorted = @students.sort {|x,y| x[:cohort] <=> y[:cohort]}
-	  sorted.each_with_index do |stud, index|
-	    puts "#{index +1}. #{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100)
-	  end
-	else puts "You have no students!"
-  end
-end
+
 
 
 def print_footer
