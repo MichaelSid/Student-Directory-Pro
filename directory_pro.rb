@@ -24,26 +24,10 @@ end
 def input_students
   print "Please enter the name of the students \n"
   print "To finish, just hit return twice at the name \n"
-  #create an empty array
-  #students = []           ======> we don't need it anymore because it's a global variable
-  #get the first name
   puts "Please insert the student's name"
   name = STDIN.gets.chomp
   return if name.empty?
-  puts "Cohort please?"
-  cohort = STDIN.gets.chomp
-  puts "Are you sure? y/n"
-  sure = STDIN.gets.chomp
-  if sure == "n"
-    puts "Cohort please?"
-	  cohort = STDIN.gets.chomp
-  elsif cohort.empty?
-    cohort = "unknown"
-  end
-  puts "Hobby?"
-  hobby = STDIN.gets.chomp
-  puts "Country?"
-  country = STDIN.gets.chomp
+  cohort, hobby, country = get_student_details
   #while the name is not empty, repeat this code
   while !name.empty? do
   #add the student hash to the array
@@ -55,21 +39,26 @@ def input_students
 	  puts "Please insert the student's name"
 	  name = STDIN.gets.chomp
 	break if name.empty?
+	  cohort, hobby, country = get_student_details
+  end	
+end
+
+def get_student_details
+	puts "Cohort please?"
+	cohort = STDIN.gets.chomp
+	puts "Are you sure? y/n"
+	sure = STDIN.gets.chomp
+	if sure == "n"
 	  puts "Cohort please?"
 	  cohort = STDIN.gets.chomp
-	  puts "Are you sure? y/n"
-	  sure = STDIN.gets.chomp
-	  if sure == "n"
-	    puts "Cohort please?"
-	    cohort = STDIN.gets.chomp
-	  elsif cohort.empty?
-	    cohort = "unknown"
-	  end
-	  puts "Hobby?"
-	  hobby = STDIN.gets.chomp
-	  puts "Country?"
-	  country = STDIN.gets.chomp
-  end	
+	elsif cohort.empty?
+	  cohort = "unknown"
+	end
+	puts "Hobby?"
+	hobby = STDIN.gets.chomp
+	puts "Country?"
+	country = STDIN.gets.chomp
+  [cohort, hobby, country]
 end
 
 def print_menu
@@ -116,11 +105,9 @@ def try_load_students
   return if filename.nil? #get out of the method if it isn't given
   if File.exists?(filename) #if it exists
   	load_students(filename)
-  	puts " "
-  	puts "Loaded #{@students.length} from #{filename}"
-  	puts " "
+  	puts "\nLoaded #{@students.length} from #{filename} \n\n"
   else # if it doesn't exist
-  	puts "Sorry, #{filename} doesn't exist."
+  	puts "\nSorry, #{filename} doesn't exist.\n\n"
   	exit #quit the program
   end
 end
