@@ -77,14 +77,14 @@ end
 
 def save_students
   #open the file for writing
-  file = File.open("students.csv", "w")
+  File.open("students.csv", "w") do |file|
   #iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:hobby], student[:country], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    @students.each do |student|
+      student_data = [student[:name], student[:hobby], student[:country], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
-  file.close
 end
 
 def student_inputter(name, cohort, hobby, country)
@@ -92,12 +92,12 @@ def student_inputter(name, cohort, hobby, country)
 end
 
 def load_students(filename = "students.csv") # we have given the filename a default value
-	file = File.open(filename, "r")
-	file.readlines.each do |line|
-		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 4 variables at the same time.
-		student_inputter(name, cohort, hobby, country)
+	File.open(filename, "r") do |file|
+	 	file.readlines.each do |line|
+		  name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 4 variables at the same time.
+		  student_inputter(name, cohort, hobby, country)
+	  end
 	end
-	file.close
 end
 
 def try_load_students
