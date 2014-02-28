@@ -27,9 +27,11 @@ def input_students
   #create an empty array
   #students = []           ======> we don't need it anymore because it's a global variable
   #get the first name
+  puts "Please insert the student's name"
   name = STDIN.gets.chomp
+  return if name.empty?
   puts "Cohort please?"
-  cohort = STDIN.gets.sub("\n"," ")
+  cohort = STDIN.gets.chomp
   puts "Are you sure? y/n"
   sure = STDIN.gets.chomp
   if sure == "n"
@@ -45,11 +47,12 @@ def input_students
   #while the name is not empty, repeat this code
   while !name.empty? do
   #add the student hash to the array
-    @students << {:name => name, :cohort => cohort, :hobby => hobby, :country => country}
+    student_inputter(name, cohort, hobby, country)
 	  if @students.length > 1
 	    print "Now we have #{@students.length} students. \n"
 	  else print "Now we have #{@students.length} student. \n"
 	  end
+	  puts "Please insert the student's name"
 	  name = STDIN.gets.chomp
 	break if name.empty?
 	  puts "Cohort please?"
@@ -95,11 +98,15 @@ def save_students
   file.close
 end
 
+def student_inputter(name, cohort, hobby, country)
+  @students << {:name => name, :cohort => cohort, :hobby => hobby, :country => country}
+end
+
 def load_students(filename = "students.csv") # we have given the filename a default value
 	file = File.open(filename, "r")
 	file.readlines.each do |line|
 		name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 4 variables at the same time.
-		@students << {:name => name, :hobby => hobby, :country => country, :cohort => cohort}
+		student_inputter(name, cohort, hobby, country)
 	end
 	file.close
 end
@@ -143,19 +150,6 @@ def interactive_menu
     process(STDIN.gets.chomp)
     end
 end 
-
-
-#def print_students
-#  if !@students.empty?
-#	  i = 0
-#	  while i < @students.length
-#	    stud = @students[i]
-#	    puts "#{stud[:name]}, #{stud[:hobby]}, #{stud[:country]}, #{stud[:cohort]}".center(100) 
-#	    i += 1
-#	  end
-#  else puts "You have no students!"
-#  end
-#end
 
 
 #nothing happens until we call the methods
