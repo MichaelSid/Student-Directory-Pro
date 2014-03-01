@@ -1,3 +1,4 @@
+require 'csv'
 @students = [] # an empty array accessible to all methods
 
 def print_header
@@ -64,8 +65,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to a file"
+  puts "4. Load the list from a file"
   puts "9. Exit" #9 because we'll be adding more items
 end
 
@@ -75,14 +76,13 @@ def show_students
 	print_footer
 end
 
-def save_students
+
+def save_students(filename = "students.csv")
   #open the file for writing
-  File.open("students.csv", "w") do |file|
+  CSV.open(filename, "wb") do |csv|          #==> thanks to http://apidock.com/ruby/CSV
   #iterate over the array of students
     @students.each do |student|
-      student_data = [student[:name], student[:hobby], student[:country], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      csv << [student[:name], student[:hobby], student[:country], student[:cohort]]
     end
   end
 end
@@ -91,24 +91,39 @@ def student_inputter(name, cohort, hobby, country)
   @students << {:name => name, :cohort => cohort, :hobby => hobby, :country => country}
 end
 
-def load_students(filename = "students.csv") # we have given the filename a default value
-	File.open(filename, "r") do |file|
-	 	file.readlines.each do |line|
-		  name, hobby, country, cohort = line.chomp.split(',') #this is a parallel assignment: we are assigning 4 variables at the same time.
-		  student_inputter(name, cohort, hobby, country)
-	  end
+def load_students(filename = "students.csv")
+	CSV.foreach(filename) do |row|
+		name, hobby, country, cohort = row
+		student_inputter(name, cohort, hobby, country)
 	end
 end
+
+def ask_for_file(command)
+	puts "Which file would you like to save / load?"
+  filename = STDIN.gets.chomp
+  case command
+  when "Saving"
+    save_students(filename)
+  when "Loading"
+  	if File.exists?(filename)
+		  load_students(filename)
+		else
+			puts "File does not exist"
+			return
+		end
+  end
+end
+ 
 
 def try_load_students
 	filename = ARGV.first #first argument from the command line
   return if filename.nil? #get out of the method if it isn't given
   if File.exists?(filename) #if it exists
-  	load_students(filename)
-  	puts "\nLoaded #{@students.length} from #{filename} \n\n"
+    load_students(filename)
+    puts "\nLoaded #{@students.length} from #{filename} \n\n"
   else # if it doesn't exist
-  	puts "\nSorry, #{filename} doesn't exist.\n\n"
-  	exit #quit the program
+    puts "\nSorry, #{filename} doesn't exist.\n\n"
+    exit #quit the program
   end
 end
 
@@ -119,9 +134,9 @@ def process(selection)
   when "2"
   	show_students
   when "3"
-  	save_students
+  	ask_for_file("Saving")
   when "4"
-  	load_students
+  	ask_for_file("Loading")
   when "9"
   	exit #this will cause the program to terminate
   else
